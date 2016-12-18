@@ -20,9 +20,11 @@ object Initialize {
     session.execute("CREATE KEYSPACE xsd WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1 }")
   }
   def createTable(session: Session): Unit = {
+    session.execute("CREATE TABLE include (file text,schemaLocation text,PRIMARY KEY(file,schemaLocation))")
     session.execute("CREATE TABLE simpleType (name text PRIMARY KEY, base text,restriction map<text,text>)")
     session.execute("CREATE TABLE complexType (file text,name text,PRIMARY KEY(file,name))")
-    session.execute("CREATE TABLE element (file text,complexName text,name text, dataType text,minOccurs int,maxOccurs int, PRIMARY KEY(file,complexName,name))")
+    session.execute("CREATE TABLE group (file text,name text,PRIMARY KEY(file,name))")
+    session.execute("CREATE TABLE element (file text,name text,complexName text,groupName text,dataType text,minOccurs int,maxOccurs int, PRIMARY KEY(file,name))")
   }
   def dropKeyspace(session: Session): Unit = {
     session.execute("DROP KEYSPACE xsd")
