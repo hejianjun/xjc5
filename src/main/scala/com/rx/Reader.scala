@@ -8,22 +8,37 @@ import scala.xml.XML
   * Created by hejianjun on 2016/12/11.
   */
 object Reader {
-  def main(args: Array[String]) {
-    val filePath = "D:\\xsd2\\"
+
+  def getFileList(filePath:String): Array[File] ={
     val root = new File(filePath)
-    val files = root.listFiles()
-    files.foreach(file => {
-      val fileName = file.getName
-      val xml = XML.loadFile(file)
-      val list = (xml \ "_").map(e => e match {
-        case <simpleType>{_*}</simpleType> => SimpleType.fromXML(e)
-        case <include>{_*}</include> => Include.fromXML(fileName, e)
-        case <group>{_*}</group> => Group.fromXML(fileName, e)
-        case <complexType>{_*}</complexType> => ComplexType.fromXML(fileName, e)
-        case <element>{_*}</element> => Element.fromXML(fileName, e)
-        case _ => throw new Exception("未知类型"+e)
-      })
-      println(list)
-    })
+    root.listFiles()
   }
+  def getSimpleType(file: File) = {
+    val xml = XML.loadFile(file)
+    (xml \ "simpleType").map(e => SimpleType.fromXML(e))
+  }
+  def getInclude(file: File) = {
+    val fileName = file.getName
+    val xml = XML.loadFile(file)
+    (xml \ "include").map(e => Include.fromXML(fileName, e))
+  }
+  def getGroup(file: File) = {
+    val fileName = file.getName
+    val xml = XML.loadFile(file)
+    (xml \ "group").map(e => Group.fromXML(fileName, e))
+  }
+
+  def getComplexType(file: File) = {
+    val fileName = file.getName
+    val xml = XML.loadFile(file)
+    (xml \ "complexType").map(e => ComplexType.fromXML(fileName, e))
+  }
+
+  def getElement(file: File) = {
+    val fileName = file.getName
+    val xml = XML.loadFile(file)
+    (xml \ "element").map(e => Element.fromXML(fileName, e))
+  }
+
+
 }
