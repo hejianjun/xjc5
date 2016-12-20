@@ -17,56 +17,26 @@ object Saving2 {
     Reader.getFileList("D:\\xsd2\\").foreach(file => {
 
       val simpleTypeDF = sparkSession.createDataFrame[SimpleType](Reader.getSimpleType(file))
-      simpleTypeDF.write.cassandraFormat("simple_type", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      //simpleTypeDF.write.cassandraFormat("simple_type", "xsd", "Test Cluster").mode(SaveMode.Append).save()
 
       val includeDF = sparkSession.createDataFrame[Include](Reader.getInclude(file)).withColumnRenamed("schemaLocation", "schema_location")
-      includeDF.write.cassandraFormat("include", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      //includeDF.write.cassandraFormat("include", "xsd", "Test Cluster").mode(SaveMode.Append).save()
 
       val group = Reader.getGroup(file)
-      val groupDF = sparkSession.createDataFrame[Group](group).drop("element")
-      groupDF.write.cassandraFormat("group", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      println(group)
+      //val groupDF = sparkSession.createDataFrame[Group](group)
+      //groupDF.write.cassandraFormat("group", "xsd", "Test Cluster").mode(SaveMode.Append).save()
 
-      val groupElementDF = sparkSession
-        .createDataFrame[Element](group.flatMap(es=>es.element.map(e=>{e.groupName=es.name;e})))
-        .withColumnRenamed("dataType", "data_type")
-        .withColumnRenamed("minOccurs", "min_occurs")
-        .withColumnRenamed("maxOccurs", "max_occurs")
-        .withColumnRenamed("groupName", "group_name")
-      groupElementDF.write.cassandraFormat("element", "xsd", "Test Cluster").mode(SaveMode.Append).save()
 
       val complexType = Reader.getComplexType(file)
-      val complexTypeDF = sparkSession.createDataFrame[ComplexType](complexType).drop("element").drop("group").drop("choice")
-
-      complexTypeDF.write.cassandraFormat("complex_type", "xsd", "Test Cluster").mode(SaveMode.Append).save()
-
-      val complexTypeElementDF = sparkSession
-        .createDataFrame[Element](complexType.flatMap(es=>es.element.map(e=>{e.complexName=es.name;e})))
-        .withColumnRenamed("dataType", "data_type")
-        .withColumnRenamed("minOccurs", "min_occurs")
-        .withColumnRenamed("maxOccurs", "max_occurs")
-        .withColumnRenamed("complexName", "complex_name")
-
-      complexTypeElementDF.write.cassandraFormat("element", "xsd", "Test Cluster").mode(SaveMode.Append).save()
-
-      val groupRefDF = sparkSession
-        .createDataFrame[GroupRef](complexType.flatMap(cs=>cs.group.map(c=>{c.complexName=cs.name;c})))
-        .withColumnRenamed("minOccurs", "min_occurs")
-        .withColumnRenamed("maxOccurs", "max_occurs")
-        .withColumnRenamed("complexName", "complex_name")
-      groupRefDF.write.cassandraFormat("group_ref", "xsd", "Test Cluster").mode(SaveMode.Append).save()
-
-      val choiceDF = sparkSession
-        .createDataFrame[GroupRef](complexType.flatMap(cs=>cs.choice.map(c=>{c.complexName=cs.name;c})))
-        .withColumnRenamed("minOccurs", "min_occurs")
-        .withColumnRenamed("maxOccurs", "max_occurs")
-        .withColumnRenamed("complexName", "complex_name")
-      choiceDF.write.cassandraFormat("group_ref", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      //val complexTypeDF = sparkSession.createDataFrame[ComplexType](complexType)
+      //complexTypeDF.write.cassandraFormat("complex_type", "xsd", "Test Cluster").mode(SaveMode.Append).save()
 
       val elementDF = sparkSession.createDataFrame[Element](Reader.getElement(file))
         .withColumnRenamed("dataType", "data_type")
         .withColumnRenamed("minOccurs", "min_occurs")
         .withColumnRenamed("maxOccurs", "max_occurs")
-      elementDF.write.cassandraFormat("element", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      //elementDF.write.cassandraFormat("element", "xsd", "Test Cluster").mode(SaveMode.Append).save()
     })
   }
 }

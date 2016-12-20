@@ -14,30 +14,31 @@ object Reader {
     root.listFiles()
   }
   def getSimpleType(file: File) = {
+    val fileName = file.getName
     val xml = XML.loadFile(file)
-    (xml \ "simpleType").map(e => SimpleType.fromXML(e))
+    (xml \ "simpleType").map(e => SimpleType(fileName,e))
   }
   def getInclude(file: File) = {
     val fileName = file.getName
     val xml = XML.loadFile(file)
-    (xml \ "include").map(e => Include.fromXML(fileName, e))
+    (xml \ "include").map(e => Include(fileName, e))
   }
   def getGroup(file: File) = {
     val fileName = file.getName
     val xml = XML.loadFile(file)
-    (xml \ "group").map(e => Group.fromXML(fileName, e))
+    (xml \ "group").map(e => Group(fileName, e))
   }
 
   def getComplexType(file: File) = {
     val fileName = file.getName
     val xml = XML.loadFile(file)
-    (xml \ "complexType").map(e => ComplexType.fromXML(fileName, e))
+    (xml \ "complexType").map(e => ComplexType(fileName, e))
   }
 
   def getElement(file: File) = {
     val fileName = file.getName
     val xml = XML.loadFile(file)
-    (xml \ "element").map(e => Element.fromXML(fileName, e))
+    (xml \ "element").map(e => Element(fileName, e))
   }
 
 

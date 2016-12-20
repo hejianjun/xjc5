@@ -9,7 +9,7 @@ case class Include(file: String,schemaLocation:String) {
 
 }
 object Include {
-  def fromXML(file:String,e: Node): Include = {
+  def apply(file:String,e: Node): Include = {
     Include(file,e\@"schemaLocation")
   }
 }

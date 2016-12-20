@@ -14,7 +14,6 @@ object Loading {
       .appName("Simple Application")
       .config("spark.cassandra.connection.host", "127.0.0.1")
       .getOrCreate()
-
     sparkSession.sql(
       """CREATE TEMPORARY TABLE complex_type
         |USING org.apache.spark.sql.cassandra
@@ -24,7 +23,7 @@ object Loading {
         |  cluster "Test Cluster",
         |  pushdown "true"
         |)""".stripMargin)
-    val df = sparkSession.sql("select * from complex_type")
+    val df = sparkSession.sql("select * from complexType")
     df.show()
   }
 }

@@ -25,15 +25,11 @@ object Saving {
       val groupRDD = sc.parallelize[Group](group)
       groupRDD.saveToCassandra("xsd", "group", SomeColumns("file", "name"))
 
-      val groupElementRDD = sc.parallelize[Element](group.flatMap(es=>es.element.map(e=>{e.groupName=es.name;e})))
-      groupElementRDD.saveToCassandra("xsd", "element", SomeColumns("file", "name", "data_type", "min_occurs", "max_occurs","group_name"))
 
       val complexType = Reader.getComplexType(file)
       val complexTypeRDD = sc.parallelize[ComplexType](complexType)
       complexTypeRDD.saveToCassandra("xsd", "complex_type", SomeColumns("file", "name"))
 
-      val complexTypeElementRDD = sc.parallelize[Element](group.flatMap(es=>es.element.map(e=>{e.complexName=es.name;e})))
-      complexTypeElementRDD.saveToCassandra("xsd", "element", SomeColumns("file", "name", "data_type", "min_occurs", "max_occurs","complex_name"))
 
       val elementRDD = sc.parallelize[Element](Reader.getElement(file))
       elementRDD.saveToCassandra("xsd", "element", SomeColumns("file", "name", "data_type", "min_occurs", "max_occurs"))

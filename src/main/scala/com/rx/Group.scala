@@ -5,16 +5,16 @@ import scala.xml.Node
 /**
   * Created by hejianjun on 2016/12/18.
   */
-case class Group(file:String,name:String,val element:Seq[Element]){
+case class Group(file:String,name:String,ref:String,minOccurs:String, maxOccurs:String,val sequence:Seq[Sequence]) extends Sequence{
 
 }
 object Group {
-  def getGroup(file: String, name: String, e: Node): Seq[String] = {
-    (e\"group").map(n=>n\@"ref")
-  }
-
-  def fromXML(file:String,e: Node): Group = {
-    val name=e\@"name"
-    Group(file,name,(e\"sequence"\"element").map(n=>Element.fromXML(file,n)))
+  def apply(file:String,e: Node): Group = {
+    Group(file,e\@"name",e\@"ref",e\@"minOccurs",e\@"maxOccurs",
+      (e \ "sequence" \ "_").map(s => s match {
+        case <element></element> => Element(file, s)
+        case <group></group> => Group(file, s)
+        case <choice></choice> => Choice(file, s)
+      }))
   }
 }
