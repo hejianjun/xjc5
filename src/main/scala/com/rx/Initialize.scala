@@ -24,14 +24,14 @@ object Initialize {
   def createTable(session: Session): Unit = {
     session.execute("CREATE TABLE include (file text,schema_location text,PRIMARY KEY(file,schema_location))")
     session.execute("CREATE TABLE simple_type (file text,name text, base text,restriction list<frozen<tuple<text,text>>>,PRIMARY KEY(file,name))")
-    session.execute("CREATE TABLE complex_type (file text,name text,PRIMARY KEY(file,name))")
-    session.execute("CREATE TABLE element (file text,name text,data_type text,min_occurs int,max_occurs int,PRIMARY KEY(file,name))")
+    session.execute("CREATE TABLE complex_type (file text,name text,sequence list<frozen<element>>,PRIMARY KEY(file,name))")
+    session.execute("CREATE TABLE groups (file text,name text,ref text,min_occurs text,max_occurs text,sequence list<frozen<element>>,PRIMARY KEY(file,name))")
+    session.execute("CREATE TABLE elements (file text,name text,data_type text,min_occurs text,max_occurs text,PRIMARY KEY(file,name))")
   }
 
   def createUdt(session: Session): Unit ={
-    session.execute("CREATE TABLE group (file text,name text,PRIMARY KEY(file,name))")
-    session.execute("CREATE TABLE group_ref (file text,ref text,min_occurs int,max_occurs int,complex_name text,PRIMARY KEY(file,ref))")
-
+    session.execute("CREATE TYPE element (file text,name text,data_type text,min_occurs text,max_occurs text)")
+    session.execute("CREATE TYPE group (file text,name text,ref text,min_occurs text,max_occurs text,sequence list<frozen<element>>)")
   }
   def dropKeyspace(session: Session): Unit = {
     session.execute("DROP KEYSPACE xsd")

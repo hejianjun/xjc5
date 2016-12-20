@@ -23,7 +23,7 @@ object Loading {
         |  cluster "Test Cluster",
         |  pushdown "true"
         |)""".stripMargin)
-    val df = sparkSession.sql("select * from complexType")
+    val df = sparkSession.sql("select sequence.name from complex_type where sequence.data_type='N'")
     df.show()
   }
 }

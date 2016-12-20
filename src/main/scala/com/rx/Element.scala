@@ -5,7 +5,7 @@ import scala.xml.Node
 /**
   * Created by hejianjun on 2016/12/11.
   */
-case class Element(file: String, name: String, dataType: String, minOccurs: String, maxOccurs: String) extends Sequence{
+case class Element(file: String, name: String, data_type: String, min_occurs: String, max_occurs: String) extends Sequence{
 }
 
 object Element {
