@@ -1,4 +1,4 @@
-package com.rx
+package com.rx.cassandra
 
 import com.datastax.driver.core.Session
 import com.datastax.spark.connector.cql.CassandraConnector

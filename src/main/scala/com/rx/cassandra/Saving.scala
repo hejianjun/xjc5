@@ -1,7 +1,8 @@
-package com.rx
+package com.rx.cassandra
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import com.rx.xsd.Reader
 import org.apache.spark.sql.cassandra._
+import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 /**
   * Created by hejianjun on 2016/12/18.
   */
@@ -17,21 +18,23 @@ object Saving {
     Reader.getFileList("D:\\xsd2\\").foreach(file => {
 
       val simpleTypeDF = Reader.getSimpleType(file).toDS
-      simpleTypeDF.write.cassandraFormat("simple_type", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      writeXsd(simpleTypeDF,"simple_type")
 
       val includeDF = Reader.getInclude(file).toDS
-      includeDF.write.cassandraFormat("include", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      writeXsd(includeDF,"include")
 
       val groupDF = Reader.getGroup(file).toDS
-      groupDF.write.cassandraFormat("groups", "xsd", "Test Cluster").mode(SaveMode.Append).save()
-
+      writeXsd(groupDF,"groups")
 
       val complexTypeDF = Reader.getComplexType(file).toDS
-      complexTypeDF.write.cassandraFormat("complex_type", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      writeXsd(complexTypeDF,"complex_type")
 
       val elementDF = Reader.getElement(file).toDS
-      elementDF.write.cassandraFormat("elements", "xsd", "Test Cluster").mode(SaveMode.Append).save()
+      writeXsd(elementDF,"elements")
 
     })
+  }
+  def writeXsd[T](df:Dataset[T],table: String) ={
+    df.write.cassandraFormat(table, "xsd", "Test Cluster").mode(SaveMode.Append).save()
   }
 }

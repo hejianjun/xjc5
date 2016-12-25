@@ -1,7 +1,12 @@
-package com.rx
+package com.rx.xsd
 
 import java.io.File
 
+import com.rx._
+
+import scala.collection
+import scala.collection.immutable.Seq
+import scala.reflect.ClassTag
 import scala.xml.XML
 
 /**
@@ -12,6 +17,12 @@ object Reader {
   def getFileList(filePath:String): Array[File] ={
     val root = new File(filePath)
     root.listFiles()
+  }
+  def get[T:ClassTag](file: File): Seq[T] ={
+    val fileName = file.getName
+    val xml = XML.loadFile(file)
+    //(xml \ "simpleType").map(e => )
+    Seq[T]()
   }
   def getSimpleType(file: File) = {
     val fileName = file.getName
