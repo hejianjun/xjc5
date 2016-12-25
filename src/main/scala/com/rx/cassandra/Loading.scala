@@ -41,7 +41,7 @@ object Loading {
       .count()
     println(count)
     */
-    getComplexType().flatMap(_.sequence).filter("max_occurs > 1").show(1000)
+    getComplexType().flatMap(_.sequence).filter("max_occurs > 1").groupBy("data_type").count().orderBy("data_type").show(150)
   }
   def getSimpleType():Dataset[SimpleType]={
     spark
