@@ -3,6 +3,10 @@ package com.rx.cassandra
 import com.rx.xsd.Reader
 import org.apache.spark.sql.cassandra._
 import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
+
+import scala.reflect.io.Path
+import scala.xml.XML
+
 /**
   * Created by hejianjun on 2016/12/18.
   */
@@ -15,21 +19,21 @@ object Saving {
       .config("spark.cassandra.connection.host", "127.0.0.1")
       .getOrCreate()
     import sparkSession.implicits._
-    Reader.getFileList("D:\\xsd2\\").foreach(file => {
+    Path("D:\\xsd2\\").walkFilter(p=>{p.isFile && p.extension=="xsd"}).map(f=>Reader(f.jfile)).foreach(reader => {
 
-      val simpleTypeDF = Reader.getSimpleType(file).toDS
+      val simpleTypeDF = reader.getSimpleType.toDS
       writeXsd(simpleTypeDF,"simple_type")
 
-      val includeDF = Reader.getInclude(file).toDS
+      val includeDF = reader.getInclude.toDS
       writeXsd(includeDF,"include")
 
-      val groupDF = Reader.getGroup(file).toDS
+      val groupDF = reader.getGroup.toDS
       writeXsd(groupDF,"groups")
 
-      val complexTypeDF = Reader.getComplexType(file).toDS
+      val complexTypeDF = reader.getComplexType.toDS
       writeXsd(complexTypeDF,"complex_type")
 
-      val elementDF = Reader.getElement(file).toDS
+      val elementDF = reader.getElement.toDS
       writeXsd(elementDF,"elements")
 
     })

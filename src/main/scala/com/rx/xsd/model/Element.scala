@@ -1,4 +1,4 @@
-package com.rx
+package com.rx.xsd.model
 
 import scala.xml.Node
 

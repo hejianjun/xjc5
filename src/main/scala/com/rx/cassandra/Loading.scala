@@ -1,6 +1,6 @@
 package com.rx.cassandra
 
-import com.rx.{ComplexType, Element, SimpleType}
+import com.rx.xsd.model.{SimpleType, Element, ComplexType}
 import org.apache.spark.sql.cassandra._
 import org.apache.spark.sql.{Dataset, SparkSession}
 
@@ -41,23 +41,23 @@ object Loading {
       .count()
     println(count)
     */
-    getComplexType().flatMap(_.sequence).filter("max_occurs > 1").groupBy("data_type").count().orderBy("data_type").show(150)
+    getComplexType.flatMap(_.sequence).filter("max_occurs > 1").groupBy("data_type").count().orderBy("data_type").show(150)
   }
-  def getSimpleType():Dataset[SimpleType]={
+  def getSimpleType:Dataset[SimpleType]={
     spark
       .read
       .cassandraFormat("simple_type", "xsd", "Test Cluster")
       .load()
       .as[SimpleType]
   }
-  def getComplexType():Dataset[ComplexType]={
+  def getComplexType:Dataset[ComplexType]={
     spark
       .read
       .cassandraFormat("complex_type", "xsd", "Test Cluster")
       .load()
       .as[ComplexType]
   }
-  def getElement():Dataset[Element]={
+  def getElement:Dataset[Element]={
     spark
       .read
       .cassandraFormat("elements", "xsd", "Test Cluster")

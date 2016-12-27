@@ -18,11 +18,13 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql-kafka-0-10" % "2.0.2"
 )
 
+
 // Add the POI core and OOXML support dependencies into your build.sbt
 libraryDependencies ++= Seq(
   "org.apache.poi" % "poi" % "3.16-beta1",
   "org.apache.poi" % "poi-ooxml" % "3.16-beta1",
-  "org.apache.poi" % "poi-ooxml-schemas" % "3.16-beta1"
+  "org.apache.poi" % "poi-ooxml-schemas" % "3.16-beta1",
+  "org.apache.poi" % "poi-scratchpad" % "3.16-beta1"
 )
 
 

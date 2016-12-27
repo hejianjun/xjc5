@@ -20,7 +20,6 @@ object Structured {
       .format("kafka")
       .option("kafka.bootstrap.servers", "localhost:9092")
       .option("subscribe", "test")
-      //.option("topic", "test")
       .load()
     val words = ds1.selectExpr("CAST(value AS STRING)")
       .as[String]

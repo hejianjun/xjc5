@@ -3,7 +3,7 @@ package com.rx.spark
 import java.io.File
 
 import com.datastax.spark.connector.util.Logging
-import com.rx.ComplexType
+import com.rx.xsd.model.ComplexType
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.receiver.Receiver
 
