@@ -8,10 +8,3 @@ import org.apache.poi.hwpf.usermodel.TableRow
 case class ComplexType(ajlx: String, name: String) {
 
 }
-
-object ComplexType {
-  import com.rx.poi.model.Implicit._
-  def apply(ajlx: String, row: TableRow): ComplexType = {
-    ComplexType(ajlx, row.getCell(0))
-  }
-}

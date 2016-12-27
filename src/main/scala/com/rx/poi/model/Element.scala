@@ -8,10 +8,3 @@ import org.apache.poi.hwpf.usermodel.TableRow
 case class Element(complexType: ComplexType, sequence: String, name: String, id: String, data_type: String, explain: String) {
 
 }
-
-object Element {
-  import com.rx.poi.model.Implicit._
-  def apply(complexType: ComplexType, row: TableRow): Element = {
-    Element(complexType, row.getCell(0), row.getCell(1), row.getCell(2), row.getCell(3), row.getCell(4))
-  }
-}

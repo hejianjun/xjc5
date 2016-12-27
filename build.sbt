@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "org.apache.poi" % "poi-ooxml-schemas" % "3.16-beta1",
   "org.apache.poi" % "poi-scratchpad" % "3.16-beta1"
 )
-
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.0" % "test"
 
 
 
