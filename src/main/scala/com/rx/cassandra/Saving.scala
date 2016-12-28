@@ -13,12 +13,12 @@ import scala.xml.XML
 object Saving {
   def main(args: Array[String]) {
 
-    val sparkSession = SparkSession.builder
+    val spark = SparkSession.builder
       .master("local")
       .appName("Simple Application")
       .config("spark.cassandra.connection.host", "127.0.0.1")
       .getOrCreate()
-    import sparkSession.implicits._
+    import spark.implicits._
     Path("D:\\xsd2\\").walkFilter(p=>{p.isFile && p.extension=="xsd"}).map(f=>Reader(f.jfile)).foreach(reader => {
 
       val simpleTypeDF = reader.getSimpleType.toDS

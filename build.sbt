@@ -6,6 +6,10 @@ scalaVersion := "2.11.8"
 
 libraryDependencies += "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3"
 
+libraryDependencies += "org.apache.lucene" % "lucene-core" % "6.3.0"
+
+libraryDependencies += "com.sksamuel.elastic4s" %% "elastic4s-core" % "5.1.1"
+
 libraryDependencies += "org.apache.kafka" % "kafka-clients" % "0.10.0.1"
 
 libraryDependencies ++= Seq(
