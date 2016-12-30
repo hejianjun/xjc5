@@ -5,12 +5,11 @@ import org.apache.spark.sql.cassandra._
 import org.apache.spark.sql.{Dataset, SaveMode, SparkSession}
 
 import scala.reflect.io.Path
-import scala.xml.XML
 
 /**
   * Created by hejianjun on 2016/12/18.
   */
-object Saving {
+object SavingXsd {
   def main(args: Array[String]) {
 
     val spark = SparkSession.builder
@@ -19,7 +18,8 @@ object Saving {
       .config("spark.cassandra.connection.host", "127.0.0.1")
       .getOrCreate()
     import spark.implicits._
-    Path("D:\\xsd2\\").walkFilter(p=>{p.isFile && p.extension=="xsd"}).map(f=>Reader(f.jfile)).foreach(reader => {
+    val resource=this.getClass.getClassLoader.getResource("")
+    Path(resource.getPath+"/xsd/").walkFilter(p=>{p.isFile && p.extension=="xsd"}).map(f=>Reader(f.jfile)).foreach(reader => {
 
       val simpleTypeDF = reader.getSimpleType.toDS
       writeXsd(simpleTypeDF,"simple_type")
@@ -41,4 +41,5 @@ object Saving {
   def writeXsd[T](df:Dataset[T],table: String) ={
     df.write.cassandraFormat(table, "xsd", "Test Cluster").mode(SaveMode.Append).save()
   }
+
 }

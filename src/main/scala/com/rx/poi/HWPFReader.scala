@@ -8,9 +8,12 @@ import org.apache.poi.hwpf.usermodel.{TableIterator, Table}
 
 import com.rx.poi.model.Implicit._
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class HWPFReader(path: String) {
+  var rule = new ListBuffer[Rule]
+
 
   var customary = new ListBuffer[Customary]
   var simpleType = new ListBuffer[SimpleType]
@@ -51,11 +54,13 @@ case class HWPFReader(path: String) {
         case (Seq("序号", "数据项名称", "标识", "类型", "说明"), Seq(name))
         => complexType.append(ComplexType(tableName, name))
         case (Seq("序号", "数据项名称", "标识", "类型", "说明"), Seq(sequence, name, id, data_type, explain, _*))
-        => element.append(Element(complexType.last, sequence, name, id, data_type, explain))
+        => val (ajlx, cname) = ComplexType.unapply(complexType.last).getOrElse((tableName,""))
+          element.append(Element(ajlx, cname, sequence, name, id, data_type, explain))
         case _ => if (seq.nonEmpty) {
           row2seq(tr, 5) match {
             case Seq(sequence, name, id, data_type, explain)
-            => element.append(Element(complexType.last, sequence, name, id, data_type, explain))
+            => val (ajlx, cname) = ComplexType.unapply(complexType.last).getOrElse((tableName,""))
+              element.append(Element(ajlx, cname, sequence, name, id, data_type, explain))
             case _ => throw new Exception("无法识别[" + tr.text + "]列，有" + tr.numCells + "列,head为" + head)
           }
         }
@@ -90,6 +95,34 @@ case class HWPFReader(path: String) {
     end
   }
 
+  def readRule(table: Table, text: String, start: Int): Int = {
+    val (before, end) = HWPFReader.getBefore(table, text, start)
+    if (!before.isEmpty) {
+
+      val (name, number, explain) = HWPFReader.getNNE(before)
+      var code, isNull, dataCheck, logicCheck, remarks: String = ""
+      val map = new mutable.HashMap[String, String]
+      for (i <- 1 until table.numRows) {
+        val tr = table.getRow(i)
+        val seq = row2seq(tr, 2)
+        seq match {
+          case Seq("", "") =>
+          case Seq("代码", r) => code = r
+          case Seq("是否为空", r) => isNull = r
+          case Seq("数据正确校验", r) => dataCheck = r
+          case Seq("业务逻辑校验", r) => logicCheck = r
+          case Seq("备注", r) => remarks = r
+          case Seq(t, r) => map.put(t, r)
+          case _ => throw new Exception("无法识别[" + tr.text + "]列，有" + tr.numCells + "列")
+        }
+      }
+      if (before.isEmpty) {
+        println(code, isNull, dataCheck, logicCheck, remarks)
+      }
+      rule.append(Rule(name, number, explain, code, isNull, dataCheck, logicCheck, remarks, map.toMap))
+    }
+    end
+  }
 }
 
 object HWPFReader {
@@ -116,5 +149,10 @@ object HWPFReader {
     CodeTable(name, number, explain)
   }
 
-
+  def getNNE(before: String): (String, String, String) = {
+    val NNE =
+      """[\s\S]*\[[0-9]+\]([\w\W]+)\s1.[\s]*编号[：|:]规则\[([0-9]+)\][\s]*2.[\s]*说明[：|:]*([\w\W]*)\s3.[\s]*代码表[\s\S]*""".r
+    val NNE(name, number, explain) = before
+    (name, number, explain)
+  }
 }

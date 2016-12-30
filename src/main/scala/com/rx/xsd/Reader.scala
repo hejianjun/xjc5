@@ -2,7 +2,6 @@ package com.rx.xsd
 
 import java.io.File
 
-import com.rx._
 import com.rx.xsd.model._
 
 import scala.collection.immutable.Seq
