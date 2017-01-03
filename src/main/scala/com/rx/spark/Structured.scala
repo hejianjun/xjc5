@@ -1,6 +1,6 @@
 package com.rx.spark
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{Row, ForeachWriter, SparkSession}
 
 /**
   * Created by hejianjun on 2016/12/22.
@@ -24,7 +24,8 @@ object Structured {
     val words = ds1.selectExpr("CAST(value AS STRING)")
       .as[String]
     val wordCounts = words.groupBy("value").count()
-    val query = wordCounts.writeStream
+    val query = wordCounts
+      .writeStream
       .outputMode("complete")
       .format("console")
       .start()

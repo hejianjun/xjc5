@@ -16,7 +16,7 @@ object Streaming {
     })
     */
     ssc.checkpoint("D:\\checkpointDirectory\\")
-    customReceiverStream.countByWindow(Seconds(30), Seconds(10)).print()
+    customReceiverStream.print()
     ssc.start()             // Start the computation
     ssc.awaitTermination()  // Wait for the computation to terminate
   }
