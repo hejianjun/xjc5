@@ -1,31 +1,50 @@
 package com.rx.elasticsearch
 
-import com.sksamuel.elastic4s.{ElasticsearchClientUri, ElasticClient}
+import com.rx.poi.HWPFReader
+import com.rx.poi.model.{Element, ComplexType, SimpleType}
+import com.sksamuel.elastic4s.{Indexable, ElasticsearchClientUri, ElasticClient}
 import com.sksamuel.elastic4s.ElasticDsl._
+import org.json4s.NoTypeHints
+import org.json4s.jackson.Serialization
+import org.json4s.jackson.Serialization._
 
 /**
   * Created by hejianjun on 2016/12/28.
   */
 object Saving {
   val uri = ElasticsearchClientUri("elasticsearch://localhost:9300")
+
   def main(args: Array[String]) {
 
     val client = ElasticClient.transport(uri)
+    implicit val formats = Serialization.formats(NoTypeHints)
+    implicit object SimpleTypeIndexable extends Indexable[SimpleType] {
+      override def json(t: SimpleType): String = write(t)
+    }
+    implicit object ComplexTypeIndexable extends Indexable[ComplexType] {
+      override def json(t: ComplexType): String = write(t)
+    }
+    implicit object ElementIndexable extends Indexable[Element] {
+      override def json(t: Element): String = write(t)
+    }
+    val reader1 = new HWPFReader("doc/附件1 审判业务数据结构规范.doc")
+    reader1.read(reader1.readDataType)
 
-    // await is a helper method to make this operation synchronous instead of async
-    // You would normally avoid doing this in a real program as it will block your thread
-    client.execute { index into "bands" / "artists" fields "name"->"coldplay" }.await
+    val reader2 = new HWPFReader("doc/附件2 审判业务标准代码.doc")
+    reader2.read(reader2.readCode)
 
-    // we need to wait until the index operation has been flushed by the server.
-    // this is an important point - when the index future completes, that doesn't mean that the doc
-    // is necessarily searchable. It simply means the server has processed your request and the doc is
-    // queued to be flushed to the indexes. Elasticsearch is eventually consistent.
-    // For this demo, we'll simply wait for 2 seconds (default refresh interval is 1 second).
-    Thread.sleep(2000)
+    val reader3 = new HWPFReader("doc/附件3 审判业务逻辑与数据校验规则.doc")
+    reader3.read(reader3.readRule)
 
-    // now we can search for the document we indexed earlier
-    val resp = client.execute { search in "bands" / "artists" query "coldplay" }.await
-    println(resp)
-    client.close()
+    client.execute {
+      bulk(
+        reader1.simpleType.map(s => indexInto("poi" / "SimpleType").doc(s)) ++
+          reader1.complexType.map(s => indexInto("poi" / "ComplexType").doc(s)) ++
+          reader1.element.map(s => indexInto("poi" / "Element").doc(s)) ++
+          reader2.codeTable.map(s => indexInto("poi" / "CodeTable").doc(s)) ++
+          reader2.item.map(s => indexInto("poi" / "Item").doc(s)) ++
+          reader3.rule.map(s => indexInto("poi" / "Rule").doc(s))
+      )
+    }
   }
 }

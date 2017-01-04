@@ -8,7 +8,11 @@ libraryDependencies += "com.datastax.spark" %% "spark-cassandra-connector" % "2.
 
 libraryDependencies += "org.apache.lucene" % "lucene-core" % "6.3.0"
 
-libraryDependencies += "com.sksamuel.elastic4s" %% "elastic4s-core" % "5.1.1"
+libraryDependencies ++= Seq(
+  "com.sksamuel.elastic4s" %% "elastic4s-core" % "5.1.1",
+  "com.sksamuel.elastic4s" %% "elastic4s-json4s" % "5.1.1"
+)
+
 
 libraryDependencies += "org.apache.kafka" % "kafka-clients" % "0.10.0.1"
 
