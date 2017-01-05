@@ -2,6 +2,7 @@ package com.rx.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.analyzers.{StopAnalyzerDefinition, CustomAnalyzerDefinition}
+import com.sksamuel.elastic4s.mappings.IdField
 import com.sksamuel.elastic4s.{ElasticClient, ElasticsearchClientUri}
 
 /**
@@ -12,10 +13,13 @@ object CreatingIndexes {
 
   def main(args: Array[String]) {
     val client = ElasticClient.transport(uri)
-    client.execute {
+    /*
+    val delReq=client.execute {
       deleteIndex("poi")
-    }
-    client.execute {
+    }.await
+    println(delReq)
+    */
+    val req=client.execute {
       createIndex("poi") mappings(
         mapping("CodeTable") as(
           textField("name"),
@@ -62,7 +66,8 @@ object CreatingIndexes {
           textField("explain")
           )
         )
-    }
+    }.await
+    println(req)
     client.close()
   }
 }
