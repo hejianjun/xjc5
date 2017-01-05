@@ -1,7 +1,7 @@
 package com.rx.elasticsearch
 
 import com.rx.poi.HWPFReader
-import com.rx.poi.model.{Element, ComplexType, SimpleType}
+import com.rx.poi.model._
 import com.sksamuel.elastic4s.{Indexable, ElasticsearchClientUri, ElasticClient}
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.json4s.NoTypeHints
@@ -27,6 +27,15 @@ object Saving {
     implicit object ElementIndexable extends Indexable[Element] {
       override def json(t: Element): String = write(t)
     }
+    implicit object CodeTableIndexable extends Indexable[CodeTable] {
+      override def json(t: CodeTable): String = write(t)
+    }
+    implicit object ItemIndexable extends Indexable[Item] {
+      override def json(t: Item): String = write(t)
+    }
+    implicit object RuleIndexable extends Indexable[Rule] {
+      override def json(t: Rule): String = write(t)
+    }
     val reader1 = new HWPFReader("doc/附件1 审判业务数据结构规范.doc")
     reader1.read(reader1.readDataType)
 
@@ -46,5 +55,6 @@ object Saving {
           reader3.rule.map(s => indexInto("poi" / "Rule").doc(s))
       )
     }
+    client.close()
   }
 }

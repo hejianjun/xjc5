@@ -33,7 +33,7 @@ object Initialize {
     session.execute("CREATE TABLE poi.customary (format text,explain text,PRIMARY KEY(format,explain))")
     session.execute("CREATE TABLE poi.element (ajlx text,cname text,sequence text,name text,id text,data_type text,explain text,PRIMARY KEY(ajlx,cname,name))")
     session.execute("CREATE TABLE poi.item (code text,name text,parent_code text,explain text,number text,PRIMARY KEY(number,code))")
-    session.execute("CREATE TABLE poi.rule (name text,number text,explain text,code text,is_null text,data_check text,logic_check text,remarks text,map map<text,text>,PRIMARY KEY(number))")
+    session.execute("CREATE TABLE poi.rule (name text,number text,explain text,code text,not_null text,data_check text,logic_check text,remarks text,map map<text,text>,PRIMARY KEY(number))")
     session.execute("CREATE TABLE poi.simple_type (name text,explain text,PRIMARY KEY(name))")
   }
 

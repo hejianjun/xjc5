@@ -12,15 +12,57 @@ object CreatingIndexes {
 
   def main(args: Array[String]) {
     val client = ElasticClient.transport(uri)
-    //client.execute {
-    println (createIndex("poi")  mappings (
-        mapping("CodeTable") as (
-          keywordField("name"),
+    client.execute {
+      deleteIndex("poi")
+    }
+    client.execute {
+      createIndex("poi") mappings(
+        mapping("CodeTable") as(
+          textField("name"),
           textField("number"),
           textField("explain")
+          ),
+        mapping("ComplexType") as(
+          textField("ajlx"),
+          textField("name")
+          ),
+        mapping("Customary") as(
+          textField("format"),
+          textField("explain")
+          ),
+        mapping("Element") as(
+          textField("ajlx"),
+          textField("cname"),
+          textField("sequence"),
+          textField("name"),
+          textField("id"),
+          textField("data_type"),
+          textField("explain")
+          ),
+        mapping("Item") as(
+          textField("code"),
+          textField("name"),
+          textField("parent_code"),
+          textField("explain"),
+          textField("number")
+          ),
+        mapping("Rule") as(
+          textField("name"),
+          textField("number"),
+          textField("explain"),
+          textField("code"),
+          textField("is_null"),
+          textField("data_check"),
+          textField("logic_check"),
+          textField("remarks"),
+          nestedField("map")
+          ),
+        mapping("SimpleType") as(
+          textField("name"),
+          textField("explain")
           )
-        ) )
-    //}
+        )
+    }
     client.close()
   }
 }
